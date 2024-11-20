@@ -3,9 +3,7 @@ rm(list=ls())
 library(deSolve)
 library(ggplot2)
 
-pdf("plots.pdf",width=8,height = 6)
 ########### MAPK pathway and Akt pathway #############
-#Y --> X
 
 # Values from articles: BRAF, 
 
@@ -31,7 +29,6 @@ initial_conditions <- c(Raf = 1,
 
 # Define the time sequence for the simulation
 times <- seq(0, 1000, by = 0.1)
-#times <- seq(0, 86400, by = 10)
 
 # Define the ODE function
 MAPK_pathway <- function(time, state, parameters) {
@@ -41,7 +38,7 @@ MAPK_pathway <- function(time, state, parameters) {
     PTEN <- PTEN_base + A * sin(omega * time)
     
     # ODEs for MAPK pathway
-    # dRaf <- beta_nras * NRAS + beta_ras * Ras - alpha_raf * Raf
+  
     dRaf <- 1/(1+(ERK/1.3)^30)* beta_ras * Ras + beta_nras * NRAS - alpha_raf * Raf
     
     dMEK <- beta_braf * BRAF + beta_raf * Raf - alpha_mek * MEK
@@ -62,17 +59,6 @@ out <- ode(y = initial_conditions, times = times, func = MAPK_pathway, parms = p
 out_df <- as.data.frame(out)
 
 
-
-par(mfrow = c(1,1))
-plot(out_df$time, out_df$ERK, type = "l", col = "blue",lwd=2, main = "Plot", 
-     xlab = "Time (h)", ylab = "Concentration (然)", ylim=c(0,3))
-lines(out_df$time, out_df$PIP3, col = "magenta",lwd=2)
-legend("bottomright", legend=c("ERK (proliferation)","PiP3 (survival)"), col = c("blue","magenta"), lty = 1,lwd=2)
-
-# Cells divide 
-
-
-
 ############ Nice plot #############
 # Load necessary package for color palettes if not already installed
 library(RColorBrewer)
@@ -84,7 +70,7 @@ colors <- c("dodgerblue3", "deeppink", "black")  # Black for the threshold line
 par(mfrow = c(1, 1))
 plot(out_df$time, out_df$ERK, type = "l", col = colors[1], lwd = 2, 
      main = "Concentration of ERK and PIP3 Over Time",
-     xlab = "Time (hours)", ylab = "Concentration (然)", 
+     xlab = "Time (hours)", ylab = "Concentration (繕M)", 
      ylim = c(0, 3.2), 
      cex.main = 1.5, cex.lab = 1.2, cex.axis = 1.1, font.main = 2)
 
@@ -138,7 +124,7 @@ out_df <- as.data.frame(out)
 par(mfrow = c(1, 1))
 plot(out_df$time, out_df$ERK, type = "l", col = colors[1], lwd = 2, 
      main = "Mutation of BRAF",
-     xlab = "Time (hours)", ylab = "Concentration (然)", 
+     xlab = "Time (hours)", ylab = "Concentration (繕M)", 
      ylim = c(0, 3.2), 
      cex.main = 1.5, cex.lab = 1.2, cex.axis = 1.1, font.main = 2)
 
@@ -191,7 +177,7 @@ out_df <- as.data.frame(out)
 par(mfrow = c(1, 1))
 plot(out_df$time, out_df$ERK, type = "l", col = colors[1], lwd = 2, 
      main = "Mutation of NRAS",
-     xlab = "Time (hours)", ylab = "Concentration (然)", 
+     xlab = "Time (hours)", ylab = "Concentration (繕M)", 
      ylim = c(0, 3.2), 
      cex.main = 1.5, cex.lab = 1.2, cex.axis = 1.1, font.main = 2)
 
@@ -245,7 +231,7 @@ out_df <- as.data.frame(out)
 par(mfrow = c(1, 1))
 plot(out_df$time, out_df$ERK, type = "l", col = colors[1], lwd = 2, 
      main = "Mutation/downregulation of PTEN",
-     xlab = "Time (hours)", ylab = "Concentration (然)", 
+     xlab = "Time (hours)", ylab = "Concentration (繕M)", 
      ylim = c(0, 3.2), 
      cex.main = 1.5, cex.lab = 1.2, cex.axis = 1.1, font.main = 2)
 
@@ -267,11 +253,8 @@ legend(x=750,y=1,
        bg = "transparent", 
        box.lwd = 0, 
        box.col = "transparent",
-       cex = 0.9,               # Adjust text size
-       inset = 0.001,            # Position closer to the edge
-       y.intersp = 0.5,         # Reduce vertical spacing between lines
-       x.intersp = 0.5          # Reduce horizontal padding
+       cex = 0.9,        
+       inset = 0.001,        
+       y.intersp = 0.5,         
+       x.intersp = 0.5          
 )
-
-
-dev.off()

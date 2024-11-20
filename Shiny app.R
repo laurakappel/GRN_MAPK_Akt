@@ -1,3 +1,6 @@
+# Shiny app of the GRN model enabling the user to interactively study essential parameters of the model.
+
+
 library(shiny)
 library(deSolve)
 library(RColorBrewer)

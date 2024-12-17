@@ -209,28 +209,33 @@ legend(x=750,y=1,
 ##############################################################################
 ################## "Mutation"/downregulation of PTEN #########################
 ##############################################################################
-# PTEN_base = 0.5, A = 0
 
-params <- c(BRAF = 0.005, NRAS =0.01, Ras = 0.5, 
-            PTEN_base = 0.5, A = 0, omega = 0.02, 
-            beta_ras = 0.4,
-            beta_nras = 0.25,
-            beta_braf = 6, beta_raf = 0.1,
-            beta_nras1 = 0.1, beta_ras1 = 0.15, beta_pi3k = 0.25,
-            beta_pten = 0.1,
-            beta_mek = 0.25,
-            
-            alpha_raf = 0.05, alpha_mek = 0.1, alpha_erk = 0.1,
-            alpha_pi3k = 0.08, alpha_pip3 = 0.11
+params1 <- c(BRAF = 0.005, NRAS =0.01, Ras = 0.5, 
+             PTEN_base = 0.8, A = 0.2, omega = 0.02, 
+             beta_ras = 0.4,
+             beta_nras = 0.25,
+             beta_braf = 6, beta_raf = 0.1,
+             beta_nras1 = 0.1, beta_ras1 = 0.15, beta_pi3k = 0.25,
+             beta_pten = 0.1,
+             beta_mek = 0.25,
+             
+             alpha_raf = 0.05, alpha_mek = 0.1, alpha_erk = 0.1,
+             alpha_pi3k = 0.08, alpha_pip3 = 0.11
 )
+params4 <- params1
+params4["PTEN_base"] <- 0.5
 
-out <- ode(y = initial_conditions, times = times, func = MAPK_pathway, parms = params)
+out1 <- ode(y = initial_conditions, times = times, func = MAPK_pathway, parms = params1)
 
-out_df <- as.data.frame(out)
+out_df1 <- as.data.frame(out1)
+
+out4 <- ode(y = initial_conditions, times = times, func = MAPK_pathway, parms = params4)
+
+out_df4 <- as.data.frame(out4)
 
 par(mfrow = c(1, 1))
-plot(out_df$time, out_df$ERK, type = "l", col = colors[1], lwd = 2, 
-     main = "Mutation/downregulation of PTEN",
+plot(out_df1$time, out_df1$ERK, type = "l", col = colors[4], lwd = 2, 
+     main = "Downregulation of PTEN",
      xlab = "Time (hours)", ylab = "Concentration (µM)", 
      ylim = c(0, 3.2), 
      cex.main = 1.5, cex.lab = 1.2, cex.axis = 1.1, font.main = 2)
@@ -238,14 +243,15 @@ plot(out_df$time, out_df$ERK, type = "l", col = colors[1], lwd = 2,
 # Add a grid for better readability
 grid(col = "gray85", lty = "dotted")
 
-# Add second line for PIP3
-lines(out_df$time, out_df$PIP3, col = colors[2], lwd = 2)
+lines(out_df1$time, out_df1$PIP3, col = colors[5], lwd = 2)
+lines(out_df4$time, out_df4$ERK, col = colors[1], lwd = 2)
+lines(out_df4$time, out_df4$PIP3, col = colors[2], lwd = 2)
 
 # Add horizontal dotted line at y = 1.3
 abline(h = 1.5, col = colors[3], lty = 2, lwd = 1.5)
 
 # Add legend including the Threshold line
-legend(x=750,y=1, 
+legend(x=800,y=0.7, 
        legend = c("ERK (proliferation)", "PIP3 (survival)", "Threshold"), 
        col = colors, 
        lty = c(1, 1, 2), 
@@ -253,8 +259,8 @@ legend(x=750,y=1,
        bg = "transparent", 
        box.lwd = 0, 
        box.col = "transparent",
-       cex = 0.9,        
-       inset = 0.001,        
-       y.intersp = 0.5,         
-       x.intersp = 0.5          
+       cex = 0.9,               # Adjust text size
+       inset = 0.001,            # Position closer to the edge
+       y.intersp = 0.5,         # Reduce vertical spacing between lines
+       x.intersp = 0.5          # Reduce horizontal padding
 )
